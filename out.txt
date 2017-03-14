@@ -1,0 +1,43 @@
+CREATE TABLE IF NOT EXISTS "django_migrations" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "app" varchar(255) NOT NULL, "name" varchar(255) NOT NULL, "applied" datetime NOT NULL);
+CREATE TABLE IF NOT EXISTS "auth_group" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "name" varchar(80) NOT NULL UNIQUE);
+CREATE TABLE IF NOT EXISTS "auth_group_permissions" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "group_id" integer NOT NULL REFERENCES "auth_group" ("id"), "permission_id" integer NOT NULL REFERENCES "auth_permission" ("id"));
+CREATE TABLE IF NOT EXISTS "auth_user_groups" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "user_id" integer NOT NULL REFERENCES "auth_user" ("id"), "group_id" integer NOT NULL REFERENCES "auth_group" ("id"));
+CREATE TABLE IF NOT EXISTS "auth_user_user_permissions" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "user_id" integer NOT NULL REFERENCES "auth_user" ("id"), "permission_id" integer NOT NULL REFERENCES "auth_permission" ("id"));
+CREATE UNIQUE INDEX "auth_group_permissions_group_id_0cd325b0_uniq" ON "auth_group_permissions" ("group_id", "permission_id");
+CREATE INDEX "auth_group_permissions_0e939a4f" ON "auth_group_permissions" ("group_id");
+CREATE INDEX "auth_group_permissions_8373b171" ON "auth_group_permissions" ("permission_id");
+CREATE UNIQUE INDEX "auth_user_groups_user_id_94350c0c_uniq" ON "auth_user_groups" ("user_id", "group_id");
+CREATE INDEX "auth_user_groups_e8701ad4" ON "auth_user_groups" ("user_id");
+CREATE INDEX "auth_user_groups_0e939a4f" ON "auth_user_groups" ("group_id");
+CREATE UNIQUE INDEX "auth_user_user_permissions_user_id_14a6b632_uniq" ON "auth_user_user_permissions" ("user_id", "permission_id");
+CREATE INDEX "auth_user_user_permissions_e8701ad4" ON "auth_user_user_permissions" ("user_id");
+CREATE INDEX "auth_user_user_permissions_8373b171" ON "auth_user_user_permissions" ("permission_id");
+CREATE TABLE IF NOT EXISTS "django_admin_log" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "object_id" text NULL, "object_repr" varchar(200) NOT NULL, "action_flag" smallint unsigned NOT NULL, "change_message" text NOT NULL, "content_type_id" integer NULL REFERENCES "django_content_type" ("id"), "user_id" integer NOT NULL REFERENCES "auth_user" ("id"), "action_time" datetime NOT NULL);
+CREATE INDEX "django_admin_log_417f1b1c" ON "django_admin_log" ("content_type_id");
+CREATE INDEX "django_admin_log_e8701ad4" ON "django_admin_log" ("user_id");
+CREATE TABLE IF NOT EXISTS "django_content_type" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "app_label" varchar(100) NOT NULL, "model" varchar(100) NOT NULL);
+CREATE UNIQUE INDEX "django_content_type_app_label_76bd3d3b_uniq" ON "django_content_type" ("app_label", "model");
+CREATE TABLE IF NOT EXISTS "auth_permission" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "content_type_id" integer NOT NULL REFERENCES "django_content_type" ("id"), "codename" varchar(100) NOT NULL, "name" varchar(255) NOT NULL);
+CREATE UNIQUE INDEX "auth_permission_content_type_id_01ab375a_uniq" ON "auth_permission" ("content_type_id", "codename");
+CREATE INDEX "auth_permission_417f1b1c" ON "auth_permission" ("content_type_id");
+CREATE TABLE IF NOT EXISTS "auth_user" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "password" varchar(128) NOT NULL, "last_login" datetime NULL, "is_superuser" bool NOT NULL, "first_name" varchar(30) NOT NULL, "last_name" varchar(30) NOT NULL, "email" varchar(254) NOT NULL, "is_staff" bool NOT NULL, "is_active" bool NOT NULL, "date_joined" datetime NOT NULL, "username" varchar(150) NOT NULL UNIQUE);
+CREATE TABLE IF NOT EXISTS "django_session" ("session_key" varchar(40) NOT NULL PRIMARY KEY, "session_data" text NOT NULL, "expire_date" datetime NOT NULL);
+CREATE INDEX "django_session_de54fa62" ON "django_session" ("expire_date");
+CREATE TABLE IF NOT EXISTS "tools_vote" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "suggestion_id" integer NOT NULL REFERENCES "tools_suggestion" ("id"), "user_id" integer NOT NULL REFERENCES "tools_user" ("id"));
+CREATE INDEX "tools_vote_869f1423" ON "tools_vote" ("suggestion_id");
+CREATE INDEX "tools_vote_e8701ad4" ON "tools_vote" ("user_id");
+CREATE TABLE IF NOT EXISTS "tools_download" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "template_id" integer NOT NULL REFERENCES "tools_template" ("id"), "user_id" integer NOT NULL REFERENCES "tools_user" ("id"));
+CREATE INDEX "tools_download_74f53564" ON "tools_download" ("template_id");
+CREATE INDEX "tools_download_e8701ad4" ON "tools_download" ("user_id");
+CREATE TABLE IF NOT EXISTS "tools_user" ("id" integer NOT NULL PRIMARY KEY, "name" varchar(30) NOT NULL, "admin" integer NOT NULL);
+CREATE TABLE IF NOT EXISTS "tools_suggestion" ("id" integer NOT NULL PRIMARY KEY, "sub_date" datetime NOT NULL, "content" text NOT NULL, "num_vote" integer NOT NULL, "contributor_id" integer NULL REFERENCES "tools_user" ("id"), "active" integer NOT NULL, "assigned" integer NOT NULL, "assigned_user_id" integer NULL REFERENCES "tools_user" ("id"), "base_template_id" integer NULL REFERENCES "tools_template" ("id"), "new_template_id" integer NULL REFERENCES "tools_template" ("id"));
+CREATE INDEX "tools_suggestion_6daa3819" ON "tools_suggestion" ("contributor_id");
+CREATE INDEX "tools_suggestion_d4396db4" ON "tools_suggestion" ("assigned_user_id");
+CREATE INDEX "tools_suggestion_32149654" ON "tools_suggestion" ("base_template_id");
+CREATE INDEX "tools_suggestion_9b4c0c75" ON "tools_suggestion" ("new_template_id");
+CREATE TABLE IF NOT EXISTS "tools_template" ("id" integer NOT NULL PRIMARY KEY, "sub_date" datetime NOT NULL, "purpose" text NOT NULL, "version" integer NOT NULL, "task_cat" varchar(30) NOT NULL, "software" varchar(20) NOT NULL, "popularity" integer NOT NULL, "audit_flag" integer NOT NULL, "corrupt_flag" integer NOT NULL, "base_model" integer NOT NULL, "template_url" text NOT NULL, "active" integer NOT NULL, "pass_admin" integer NOT NULL, "assigned" integer NOT NULL, "assigned_admin_id" integer NULL REFERENCES "tools_user" ("id"), "author_id" integer NULL REFERENCES "tools_user" ("id"), "video_url" text NOT NULL);
+CREATE INDEX "tools_template_83614c7b" ON "tools_template" ("assigned_admin_id");
+CREATE INDEX "tools_template_4f331e2f" ON "tools_template" ("author_id");
+SQLite version 3.17.0 2017-02-13 16:02:40
+Enter ".help" for usage hints.
+sqlite> 
